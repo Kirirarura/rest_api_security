@@ -35,15 +35,15 @@ public class GiftCertificate implements Serializable {
     @Column(name = "duration")
     private int duration;
 
-    @Column(name = "create_date")
+    @Column(name = "created")
     private String createDate;
 
-    @Column(name = "last_update_date")
+    @Column(name = "updated")
     private String lastUpdateDate;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(
-            name = "gift_certificates_has_tags",
+            name = "gift_certificate_has_tag",
             joinColumns = {
                     @JoinColumn(
                             name = "gift_certificate_id",

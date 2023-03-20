@@ -46,7 +46,7 @@ public class GiftCertificateQueryBuilder extends AbstractQueryBuilder<GiftCertif
         List<String> tagNames = fields.get(TAG_NAME);
         if (tagNames != null) {
             restrictions = Arrays.stream(tagNames.toArray())
-                    .map(tagName -> criteriaBuilder.equal(giftCertificateRoot.join(TAGS).get(NAME), tagName))
+                    .map(tagName -> criteriaBuilder.equal(giftCertificateRoot.join(TAGS).get(String.valueOf(NAME)), tagName))
                     .collect(Collectors.toList());
         }
         return restrictions;
