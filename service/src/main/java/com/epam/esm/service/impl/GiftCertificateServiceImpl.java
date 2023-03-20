@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.repository.GiftCertificateDao;
+import com.epam.esm.dao.repository.TagDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.*;
@@ -11,13 +11,14 @@ import com.epam.esm.request.GiftCertificateUpdateRequest;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.impl.util.PaginationHelper;
 import com.epam.esm.validation.FilterParamsValidator;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Supplier;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final GiftCertificateDao giftCertificateDao;
@@ -52,12 +53,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
 
         List<Tag> tags = checkRequestedTags(request.getTags());
-
         GiftCertificate giftCertificate = new GiftCertificate(null, request.getName(),
-                request.getDescription(), request.getPrice(), request.getDuration(), String.valueOf(Instant.now()),
-                String.valueOf(Instant.now()), tags);
+                request.getDescription(), request.getPrice(), request.getDuration(),
+                String.valueOf(Timestamp.from(Instant.now())),
+                String.valueOf(Timestamp.from(Instant.now())), tags);
 
-        return giftCertificateDao.insert(giftCertificate);
+        return giftCertificateDao.save(giftCertificate);
     }
 
     @Override
@@ -75,8 +76,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                     null, "Gift certificate " + i, "Description " + i,
                     BigDecimal.valueOf(Math.random()),
                     (int) Math.round(Math.random()),
-                    String.valueOf(Instant.now()), String.valueOf(Instant.now()), checkedTags);
-            giftCertificateDao.insert(giftCertificate);
+                    String.valueOf(Timestamp.from(Instant.now())),
+                    String.valueOf(Timestamp.from(Instant.now())), checkedTags);
+            giftCertificateDao.save(giftCertificate);
         }
     }
 
@@ -84,7 +86,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public void deleteById(Long id) {
         giftCertificateDao.findById(id).orElseThrow(getNoSuchGiftCertificateException(id));
-        giftCertificateDao.removeById(id);
+        giftCertificateDao.deleteById(id);
     }
 
     @Override
@@ -94,9 +96,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 .orElseThrow(getNoSuchGiftCertificateException(id));
 
         handleUpdateRequest(giftCertificate, updateRequest);
-        giftCertificate.setLastUpdateDate(String.valueOf(Instant.now()));
+        giftCertificate.setLastUpdateDate(String.valueOf(Timestamp.from(Instant.now())));
 
-        return giftCertificateDao.update(giftCertificate);
+        return giftCertificateDao.save(giftCertificate);
     }
 
     @Override
@@ -106,9 +108,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 .orElseThrow(getNoSuchGiftCertificateException(id));
 
         giftCertificate.setPrice(updateRequest.getPrice());
-        giftCertificate.setLastUpdateDate(String.valueOf(Instant.now()));
+        giftCertificate.setLastUpdateDate(String.valueOf(Timestamp.from(Instant.now())));
 
-        return giftCertificateDao.update(giftCertificate);
+        return giftCertificateDao.save(giftCertificate);
     }
 
     @Override

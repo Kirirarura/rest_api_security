@@ -1,4 +1,4 @@
-package com.epam.esm.service.impl;
+package com.epam.esm.service.impl.jwt;
 
 import com.epam.esm.entity.User;
 import com.epam.esm.service.UserService;

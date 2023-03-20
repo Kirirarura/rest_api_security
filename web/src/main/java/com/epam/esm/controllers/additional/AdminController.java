@@ -1,50 +1,35 @@
-package com.epam.esm.controllers;
+package com.epam.esm.controllers.additional;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.DuplicateEntityException;
 import com.epam.esm.hateoas.GiftCertificateHateoas;
+import com.epam.esm.hateoas.TagHateoas;
 import com.epam.esm.request.GiftCertificateCreateRequest;
 import com.epam.esm.request.GiftCertificatePriceUpdateRequest;
 import com.epam.esm.request.GiftCertificateUpdateRequest;
+import com.epam.esm.request.TagCreateRequest;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.service.TagService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
-
-/**
- * Controller responsible for all operations with gift certificates.
- */
 @RestController
-@RequestMapping(path = "/certificates", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/admin", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-public class GiftCertificatesController {
-
+public class AdminController {
     private final GiftCertificateService giftCertificateService;
     private final GiftCertificateHateoas giftCertificateHateoas;
+    private final TagService tagService;
+    private final TagHateoas tagHateoas;
 
-    @GetMapping("/read/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public GiftCertificateDto giftCertificateById(@PathVariable Long id) {
-        return giftCertificateHateoas.toModel(giftCertificateService.getById(id));
-    }
-
-    @PostMapping("/fillData")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createGiftCertificates(){
-        giftCertificateService.fillData();
-    }
-
-    @PostMapping
+    @PostMapping("/certificate")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<GiftCertificateDto> createGiftCertificate(
             @Valid @RequestBody GiftCertificateCreateRequest request) throws DuplicateEntityException {
@@ -55,13 +40,13 @@ public class GiftCertificatesController {
                 .body(giftCertificateDto);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/certificate/{id}")
     public ResponseEntity<GiftCertificateDto> deleteGiftCertificate(@PathVariable Long id) {
         giftCertificateService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/certificate/{id}")
     public ResponseEntity<GiftCertificateDto> updateGiftCertificate(
             @PathVariable Long id,
             @Valid @RequestBody GiftCertificateUpdateRequest request) {
@@ -70,7 +55,7 @@ public class GiftCertificatesController {
         return ResponseEntity.ok(giftCertificateDTO);
     }
 
-    @PatchMapping("/price/{id}")
+    @PatchMapping("/certificate/price/{id}")
     public ResponseEntity<GiftCertificateDto> updateGiftCertificatePrice(
             @PathVariable Long id,
             @Valid @RequestBody GiftCertificatePriceUpdateRequest request) {
@@ -79,14 +64,17 @@ public class GiftCertificatesController {
         return ResponseEntity.ok(giftCertificateDTO);
     }
 
-    @GetMapping("/read/pageableWithFilters")
-    public CollectionModel<GiftCertificateDto> allGiftCertificates(
-            @RequestParam MultiValueMap<String, String> allRequestParams,
-            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
-            @RequestParam(name = "size", defaultValue = "5", required = false) int size) {
-
-        List<GiftCertificate> giftCertificates = giftCertificateService.doFilter(allRequestParams, page, size);
-        return giftCertificateHateoas.toCollectionModel(giftCertificates);
+    @PostMapping("/tag")
+    public ResponseEntity<TagDto> createTag(@Valid @RequestBody TagCreateRequest request) {
+        TagDto tagDTO = tagHateoas.toModel(tagService.create(request));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header(HttpHeaders.LOCATION, tagDTO.getLink("self").orElseThrow().toUri().toString())
+                .body(tagDTO);
     }
 
+    @DeleteMapping("/tag/{id}")
+    public ResponseEntity<TagDto> deleteTag(@PathVariable Long id) {
+        tagService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

@@ -1,6 +1,6 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.repository.TagDao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateEntityException;
 import com.epam.esm.request.TagCreateRequest;
@@ -43,7 +43,7 @@ class TagServiceImplTest {
 
         when(tagDao.findById(preparedTag.getId())).thenReturn(Optional.of(preparedTag));
 
-        assertNotNull(tagService.getById(1L));
+        assertNotNull(tagService.findById(1L));
     }
 
     @Test
@@ -51,7 +51,7 @@ class TagServiceImplTest {
         Tag preparedTag = getTag();
         TagCreateRequest tagCreateRequest = new TagCreateRequest(preparedTag.getName());
 
-        when(tagDao.insert(argThat(tag -> tag.getId() == null))).thenAnswer(answer(getFakeSave(preparedTag.getId())));
+        when(tagDao.save(argThat(tag -> tag.getId() == null))).thenAnswer(answer(getFakeSave(preparedTag.getId())));
         Tag actual = tagService.create(tagCreateRequest);
 
         assertEquals(actual, preparedTag);
@@ -62,7 +62,7 @@ class TagServiceImplTest {
         Tag preparedTag = getTag();
         TagCreateRequest tagCreateRequest = new TagCreateRequest(preparedTag.getName());
 
-        when(tagDao.insert(argThat(tag -> tag.getId() == null))).thenThrow(DuplicateEntityException.class);
+        when(tagDao.save(argThat(tag -> tag.getId() == null))).thenThrow(DuplicateEntityException.class);
 
         assertThrows(DuplicateEntityException.class, ()-> tagService.create(tagCreateRequest));
     }

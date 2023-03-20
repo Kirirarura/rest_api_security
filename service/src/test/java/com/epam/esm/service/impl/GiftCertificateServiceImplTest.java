@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.repository.GiftCertificateDao;
+import com.epam.esm.dao.repository.TagDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateEntityException;
@@ -88,7 +88,7 @@ class GiftCertificateServiceImplTest {
         for (Tag tag : giftCertificate.getTags()) {
             when(tagDao.findByName(tag.getName())).thenReturn(Optional.of(tag));
         }
-        when(giftCertificateDao.insert(any())).thenReturn(giftCertificate);
+        when(giftCertificateDao.save(any())).thenReturn(giftCertificate);
 
         GiftCertificate actual = giftCertificateService.create(createRequest);
 
@@ -103,7 +103,7 @@ class GiftCertificateServiceImplTest {
         for (Tag tag : giftCertificate.getTags()) {
             when(tagDao.findByName(tag.getName())).thenReturn(Optional.of(tag));
         }
-        when(giftCertificateDao.insert(any())).thenThrow(DuplicateEntityException.class);
+        when(giftCertificateDao.save(any())).thenThrow(DuplicateEntityException.class);
 
         assertThrows(DuplicateEntityException.class, ()-> giftCertificateService.create(createRequest));
     }
@@ -129,7 +129,7 @@ class GiftCertificateServiceImplTest {
         when(giftCertificateDao.findById(giftCertificate.getId()))
                 .thenReturn(Optional.of(giftCertificate));
 
-        when(giftCertificateDao.update(giftCertificate)).thenAnswer(returnsFirstArg());
+        when(giftCertificateDao.save(giftCertificate)).thenAnswer(returnsFirstArg());
         assertEquals(updateRequest.getName(),
                 giftCertificateService.update(giftCertificate.getId(), updateRequest).getName());
     }
@@ -145,7 +145,7 @@ class GiftCertificateServiceImplTest {
         when(giftCertificateDao.findById(giftCertificateOriginal.getId()))
                 .thenReturn(Optional.of(giftCertificateOriginal));
 
-        when(giftCertificateDao.update(notNull())).thenAnswer(returnsFirstArg());
+        when(giftCertificateDao.save(notNull())).thenAnswer(returnsFirstArg());
         assertEquals(updateRequest.getPrice(),
                 giftCertificateService.update(giftCertificateOriginal.getId(), updateRequest).getPrice());
     }

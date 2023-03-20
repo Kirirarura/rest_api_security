@@ -32,7 +32,7 @@ public class OrderController {
         return orderHateoas.toModel(orderService.getById(id));
     }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<OrderDto> createOrder(@Valid @RequestBody OrderCreateRequest request) {
         OrderDto orderDTO = orderHateoas.toModel(
                 orderService.create(request));
