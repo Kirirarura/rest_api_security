@@ -8,7 +8,6 @@ import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.request.TagCreateRequest;
 import com.epam.esm.service.TagService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,12 +53,10 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag getMostPopularTagOfUserWithHighestCostOfAllOrders(Long id) {
-//        Optional<Tag> optionalTag = tagDao.findMostPopularTagOfUserWithHighestCostOfAllOrders(id);
-//        if (!optionalTag.isPresent()) {
-//            throw new NoSuchEntityException(TAG_NOT_FOUND);
-//        }
-//        return optionalTag.get();
-//    }
-        return null;
+        Optional<Tag> optionalTag = tagDao.findMostPopularTagOfUserWithHighestCostOfAllOrders(id);
+        if (!optionalTag.isPresent()) {
+            throw new NoSuchEntityException(TAG_NOT_FOUND);
+        }
+        return optionalTag.get();
     }
 }
