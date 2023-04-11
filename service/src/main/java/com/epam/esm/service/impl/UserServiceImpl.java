@@ -1,19 +1,24 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.RoleDao;
-import com.epam.esm.dao.UserDao;
+import com.epam.esm.dao.repository.RoleDao;
+import com.epam.esm.dao.repository.UserDao;
 import com.epam.esm.entity.Role;
 import com.epam.esm.entity.Status;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.request.UserRegistrationRequest;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.impl.util.PaginationHelper;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,28 +27,30 @@ import static com.epam.esm.exception.ExceptionMessageKey.NO_ENTITY;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
     private final RoleDao roleDao;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UserServiceImpl(UserDao userDao, RoleDao roleDao, BCryptPasswordEncoder passwordEncoder) {
-        this.userDao = userDao;
-        this.roleDao = roleDao;
-        this.passwordEncoder = passwordEncoder;
-    }
-
     @Override
-    public User register(User user) {
+    public User register(UserRegistrationRequest request) {
+
         Role roleUser = roleDao.findByName("ROLE_USER");
         List<Role> roles = new ArrayList<>();
         roles.add(roleUser);
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setEmail(request.getEmail());
+        user.setFirstName(request.getFirstname());
+        user.setLastName(request.getLastname());
         user.setRoles(roles);
         user.setStatus(Status.ACTIVE);
+        user.setCreated(LocalDateTime.now());
+        user.setUpdated(LocalDateTime.now());
 
         User registeredUser = userDao.save(user);
 

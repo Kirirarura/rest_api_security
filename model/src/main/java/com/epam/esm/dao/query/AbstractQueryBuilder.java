@@ -15,7 +15,7 @@ import static com.epam.esm.dao.query.FilterParams.*;
 /**
  * Utility class, designed to build a query to update database and retrieve info from database according to some filters.
  */
-public abstract class AbstractQueryBuilder<T> implements QueryBuilder<T>{
+public abstract class AbstractQueryBuilder<T> implements QueryBuilder<T> {
 
     private static final String PERCENT = "%";
     private static final String DESCRIPTION = "description";
@@ -23,9 +23,9 @@ public abstract class AbstractQueryBuilder<T> implements QueryBuilder<T>{
     protected List<Predicate> addName(MultiValueMap<String, String> fields, CriteriaBuilder criteriaBuilder, Root<T> root) {
         List<Predicate> restrictions = new ArrayList<>();
 
-        String name = getSingleMultiValueMapParameter(fields, NAME);
+        String name = getSingleMultiValueMapParameter(fields, NAME.getFilterName());
         if (name != null) {
-            restrictions.add(criteriaBuilder.equal(root.get(NAME), name));
+            restrictions.add(criteriaBuilder.equal(root.get(NAME.getFilterName()), name));
         }
         return restrictions;
     }
@@ -33,9 +33,9 @@ public abstract class AbstractQueryBuilder<T> implements QueryBuilder<T>{
     protected List<Predicate> addPartOfName(MultiValueMap<String, String> fields, CriteriaBuilder criteriaBuilder, Root<T> root) {
         List<Predicate> restrictions = new ArrayList<>();
 
-        String partOfName = getSingleMultiValueMapParameter(fields, PART_OF_NAME);
+        String partOfName = getSingleMultiValueMapParameter(fields, PART_OF_NAME.getFilterName());
         if (partOfName != null) {
-            restrictions.add(criteriaBuilder.like(root.get(NAME), PERCENT + partOfName + PERCENT));
+            restrictions.add(criteriaBuilder.like(root.get(NAME.getFilterName()), PERCENT + partOfName + PERCENT));
         }
         return restrictions;
     }
@@ -43,7 +43,7 @@ public abstract class AbstractQueryBuilder<T> implements QueryBuilder<T>{
     protected List<Predicate> addPartOfDescription(MultiValueMap<String, String> fields, CriteriaBuilder criteriaBuilder, Root<T> root) {
         List<Predicate> restrictions = new ArrayList<>();
 
-        String partOfDescription = getSingleMultiValueMapParameter(fields, PART_OF_DESCRIPTION);
+        String partOfDescription = getSingleMultiValueMapParameter(fields, PART_OF_DESCRIPTION.getFilterName());
         if (partOfDescription != null) {
             restrictions.add(criteriaBuilder.like(root.get(DESCRIPTION), PERCENT + partOfDescription + PERCENT));
         }
@@ -53,13 +53,13 @@ public abstract class AbstractQueryBuilder<T> implements QueryBuilder<T>{
     protected void addSortByName(MultiValueMap<String, String> fields, CriteriaBuilder criteriaBuilder,
                                  CriteriaQuery<T> criteriaQuery, Root<T> root) {
 
-        String sortType = getSingleMultiValueMapParameter(fields, SORT_BY_NAME);
+        String sortType = getSingleMultiValueMapParameter(fields, SORT_BY_NAME.getFilterName());
         if (sortType != null) {
             if (Objects.equals(sortType, SortType.DESC.getSortTypeName())) {
-                criteriaQuery.orderBy(criteriaBuilder.desc(root.get(NAME)));
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.get(NAME.getFilterName())));
             }
             if (Objects.equals(sortType, SortType.ASC.getSortTypeName())) {
-                criteriaQuery.orderBy(criteriaBuilder.asc(root.get(NAME)));
+                criteriaQuery.orderBy(criteriaBuilder.asc(root.get(NAME.getFilterName())));
             }
         }
     }

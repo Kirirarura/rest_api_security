@@ -19,7 +19,7 @@ public class FilterParamsValidator {
     private final int MIN_LENGTH_NAME = 4;
 
     public void validateFilterParams(MultiValueMap<String, String> requestParams, ExceptionResult exceptionResult){
-        String name = getSingleRequestParameter(requestParams, NAME);
+        String name = getSingleRequestParameter(requestParams, String.valueOf(NAME));
 
         if (name != null){
             FilterParamsValidator.validateGiftCertificateName(name, exceptionResult);
@@ -31,7 +31,7 @@ public class FilterParamsValidator {
                 FilterParamsValidator.validateTagName(tagName, exceptionResult);
             }
         }
-        String sortNameType = getSingleRequestParameter(requestParams, SORT_BY_NAME);
+        String sortNameType = getSingleRequestParameter(requestParams, String.valueOf(SORT_BY_NAME));
         if (sortNameType != null) {
             FilterParamsValidator.validateSortType(sortNameType.toUpperCase(), exceptionResult);
         }

@@ -23,9 +23,9 @@ public class TagsController {
     private final TagService tagService;
     private final TagHateoas tagHateoas;
 
-    @GetMapping("/{id}")
+    @GetMapping("/read/{id}")
     public TagDto getById(@PathVariable Long id) {
-        return tagHateoas.toModel(tagService.getById(id));
+        return tagHateoas.toModel(tagService.findById(id));
     }
 
     @PostMapping
@@ -42,7 +42,7 @@ public class TagsController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/popular/{id}")
+    @GetMapping("/read/popular/{id}")
     @ResponseStatus(HttpStatus.OK)
     public TagDto mostPopularTagOfUserWithHighestCostOfAllOrders(@PathVariable Long id) {
         return tagHateoas.toModel(tagService.getMostPopularTagOfUserWithHighestCostOfAllOrders(id));

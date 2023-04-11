@@ -3,6 +3,7 @@ package com.epam.esm.controllers;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
 import com.epam.esm.hateoas.UserHateoas;
+import com.epam.esm.request.UserRegistrationRequest;
 import com.epam.esm.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,12 @@ public class UsersController {
     @GetMapping("/{id}")
     public UserDto userById(@PathVariable Long id) {
         return userHateoas.toModel(userService.findById(id));
+    }
+
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto createUser(@RequestBody UserRegistrationRequest request){
+        return userHateoas.toModel(userService.register(request));
     }
 
 

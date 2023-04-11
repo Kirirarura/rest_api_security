@@ -12,11 +12,9 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.epam.esm.dao.query.FilterParams.NAME;
 import static com.epam.esm.dao.query.FilterParams.TAG_NAME;
-
 @Component
 public class GiftCertificateQueryBuilder extends AbstractQueryBuilder<GiftCertificate> {
 
@@ -46,8 +44,8 @@ public class GiftCertificateQueryBuilder extends AbstractQueryBuilder<GiftCertif
         List<String> tagNames = fields.get(TAG_NAME);
         if (tagNames != null) {
             restrictions = Arrays.stream(tagNames.toArray())
-                    .map(tagName -> criteriaBuilder.equal(giftCertificateRoot.join(TAGS).get(NAME), tagName))
-                    .collect(Collectors.toList());
+                    .map(tagName -> criteriaBuilder.equal(giftCertificateRoot.join(TAGS).get(String.valueOf(NAME)), tagName))
+                    .toList();
         }
         return restrictions;
     }

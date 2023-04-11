@@ -5,12 +5,11 @@ import com.epam.esm.entity.User;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.impl.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,13 +22,11 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping(value = "/api/v1/auth")
+@RequestMapping(value = "/auth")
 public class AuthenticationRestController {
 
     private final AuthenticationManager authenticationManager;
-
     private final JwtTokenProvider jwtTokenProvider;
-
     private final UserService userService;
 
     @Autowired
@@ -43,8 +40,7 @@ public class AuthenticationRestController {
     public ResponseEntity login(@RequestBody AuthenticationDto authenticationDto){
         try {
             String username = authenticationDto.getUsername();
-            String password = authenticationDto.getPassword();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, authenticationDto.getPassword()));
 
             User user = userService.findByUsername(username);
             if (user == null){
@@ -54,8 +50,8 @@ public class AuthenticationRestController {
             String token = jwtTokenProvider.createToken(username, user.getRoles());
 
             Map<Object, Object> response = new HashMap<>();
-            response.put("username", username);
             response.put("token", token);
+
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e){
             throw new BadCredentialsException("Invalid username or password");

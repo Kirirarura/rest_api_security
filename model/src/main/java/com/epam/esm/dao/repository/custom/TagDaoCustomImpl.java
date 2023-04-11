@@ -1,40 +1,27 @@
-package com.epam.esm.dao.impl;
+package com.epam.esm.dao.repository.custom;
 
-import com.epam.esm.dao.AbstractDao;
-import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.query.QueryBuilder;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import java.util.Optional;
 
-
-/**
- * Implementation of TagDao interface to perform basic actions with database.
- * Mainly, actions with Tags.
- */
 @Repository
-@Transactional
-public class TagDaoImpl extends AbstractDao<Tag> implements TagDao {
+public class TagDaoCustomImpl implements TagDaoCustom {
 
-    private final QueryBuilder<Tag> queryBuilder;
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Autowired
-    public TagDaoImpl(QueryBuilder<Tag> queryBuilder) {
-        super(Tag.class);
-        this.queryBuilder = queryBuilder;
-    }
-
-    @Override
-    protected QueryBuilder<Tag> getQueryCreator() {
-        return queryBuilder;
+    public TagDaoCustomImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     @Override
