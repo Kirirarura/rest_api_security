@@ -1,7 +1,6 @@
 package com.epam.esm.entity;
 
 import lombok.*;
-import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,7 +14,6 @@ import java.math.BigDecimal;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Audited
 public class Order implements Serializable {
     @Id
     @Column(unique = true, nullable = false)

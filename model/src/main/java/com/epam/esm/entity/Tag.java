@@ -1,7 +1,6 @@
 package com.epam.esm.entity;
 
 import lombok.*;
-import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,7 +16,6 @@ import java.io.Serializable;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@Audited
 public class Tag implements Serializable {
     @Id
     @Column(unique = true, nullable = false)

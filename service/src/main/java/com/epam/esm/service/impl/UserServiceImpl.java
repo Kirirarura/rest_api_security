@@ -16,6 +16,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +49,8 @@ public class UserServiceImpl implements UserService {
         user.setLastName(request.getLastname());
         user.setRoles(roles);
         user.setStatus(Status.ACTIVE);
+        user.setCreated(LocalDateTime.now());
+        user.setUpdated(LocalDateTime.now());
 
         User registeredUser = userDao.save(user);
 

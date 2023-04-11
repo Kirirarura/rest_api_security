@@ -18,7 +18,6 @@ import java.util.List;
 @Table(name = "users")
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Audited
 public class User extends BaseEntity implements Serializable {
 
     @Column(name = "username")
